@@ -56,13 +56,24 @@ jobs:
           repo_token: ${{secrets.GITHUB_TOKEN}}
           slack_webhook_url: ${{secrets.SLACK_WEBHOOK_URL}}
   test:
-    runs
+    runs-on: ubuntu-latest
     steps:
+    
+    
    # Step 1: Checkout the repository and provide your AWS credentials
     - name: Checkout repository
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
+        
+    - name: Checkout the action from a private repository
+      uses: actions/checkout@v2
+      if: ${{ always() }}
+      with:
+        repository: vijejain/cicd-actions
+        ref: refs/heads/main
+        token: ${{ secrets.TOKEN }}   # Required for Private Beta
+        path: ./.github/vijejain/cicd-actions
    
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
