@@ -190,7 +190,6 @@ $.fn.ajaxSubmit = function(options) {
         var oldSuccess = options.success || function(){};
         callbacks.push(function(data) {
             var fn = options.replaceTarget ? 'replaceWith' : 'html';
-            $(options.target)[fn](data).each(oldSuccess, arguments);
         });
     }
     else if (options.success) {
