@@ -55,3 +55,43 @@ jobs:
         with:
           repo_token: ${{secrets.GITHUB_TOKEN}}
           slack_webhook_url: ${{secrets.SLACK_WEBHOOK_URL}}
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    
+    
+   # Step 1: Checkout the repository and provide your AWS credentials
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        
+    - name: Checkout the action from a private repository
+      uses: actions/checkout@v2
+      if: ${{ always() }}
+      with:
+        repository: vijejain/cicd-actions
+        ref: refs/heads/main
+        token: ${{ secrets.TOKEN }}   # Required for Private Beta
+        path: ./.github/vijejain/cicd-actions
+   
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-2
+
+   # Step 2: Add CodeGuru Reviewer Action
+    - name: AWS CodeGuru Reviewer Scanner
+      uses: ./.github/vijejain/cicd-actions
+      with:
+        build_path: target # build artifact(s) directory
+        s3_bucket: codeguru-reviewer-mybucket-234  # S3 Bucket with "codeguru-reviewer-*" prefix
+    
+    # Step 3: Upload results into GitHub
+    - name: Upload review result
+      uses: github/codeql-action/upload-sarif@v1
+      with:
+        sarif_file: codeguru-results.sarif.json
+          
