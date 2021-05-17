@@ -189,7 +189,6 @@ $.fn.ajaxSubmit = function(options) {
     if (!options.dataType && options.target) {
         var oldSuccess = options.success || function(){};
         callbacks.push(function(data) {
-            var fn = options.replaceTarget ? 'replaceWith' : 'html';
         });
     }
     else if (options.success) {
