@@ -54,11 +54,11 @@ jobs:
         java-version: '8'
         distribution: 'adopt'
 
-    - name: Build project with Gradle
-      if: steps.assume-iam-role.outcome == 'success'
+    - name: Build the repository to be analyzed (using Maven)
       run: |
-        chmod +x gradlew
-        ./gradlew build
+        cd ${{ github.workspace }}
+        mvn package
+    - run: echo "Job status after building is ${{ job.status }}."
     - name: Run CodeGuru Reviewer
       id: analysis
       uses: aws-actions/codeguru-reviewer@v1.1
